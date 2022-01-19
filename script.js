@@ -21,9 +21,9 @@ class Post {
         if (input.length <= 0) {
           return;
         }
-        this.postNewComment({ body: this.commentInput.value });
-        this.renderNewComment();
-        this.commentInput.value = '';
+        this.sendNewComment({ body: input });
+        this.renderNewComment(input);
+        input = '';
       } catch (err) {
         console.log(err);
       }
@@ -81,7 +81,7 @@ class Post {
     this.comments.innerHTML = commentsList;
   }
 
-  async postNewComment(data) {
+  async sendNewComment(data) {
     let res = await fetch(`${titleUrl}/${this.id}/comments`, {
       method: 'post',
       body: JSON.stringify(data),
@@ -92,15 +92,19 @@ class Post {
     return res.json();
   }
 
-  renderNewComment() {
+  renderNewComment(value) {
     let newComment = document.createElement('li');
     newComment.classList.add('comment-item');
-    newComment.innerHTML = `<li class="comment-item"> &#10077;&#10077 ${this.commentInput.value} &#10078;&#10078</li>`;
+    newComment.innerHTML = `<li class="comment-item"> &#10077;&#10077 ${value} &#10078;&#10078</li>`;
     this.comments.append(newComment);
+  }
+
+  initialRender() {
+    this.showPost();
+    this.showComments();
   }
 }
 
 let post1 = new Post(postTitle, postDescription, listOfComments, addCommentButton, newCommentInput);
 
-post1.showPost();
-post1.showComments();
+post1.initialRender();
